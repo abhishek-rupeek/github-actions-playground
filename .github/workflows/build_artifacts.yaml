@@ -15,4 +15,4 @@ jobs:
           wrapper-cache-enabled: true
           dependencies-cache-enabled: true
           configuration-cache-enabled: true
-          arguments: as sembleRelease
+          arguments: assembleRelease
