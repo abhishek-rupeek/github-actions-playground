@@ -1,0 +1,57 @@
+name: Android Build Staging APK
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          sdk-platform: 'android-30'
+          build-tools: '30.0.3'
+
+      - name: Build and test
+        run: |
+          ./gradlew assembleStaging
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: staging-apk
+          path: app/build/outputs/apk/staging/*.apk
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload APK to Release
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app/build/outputs/apk/staging/*.apk
+          asset_name: Staging-APK-${{ github.run_number }}.apk
+          asset_content_type: application/vnd.android.package-archive
