@@ -36,10 +36,21 @@ jobs:
         with:
           name: release-artifacts
           path: app/build/outputs/apk/staging
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.pull_request.title }}
+          release_name: Release ${{ github.event.pull_request.title }}
+          draft: true
+          prerelease: true
       - name: Create Github Release
         uses: softprops/action-gh-release@v1
         with:
           generate_release_notes: true
           prerelease: true
+          tag_name: ${{ github.event.pull_request.title }}
           files: app/build/outputs/apk/release/staging.apk
 
