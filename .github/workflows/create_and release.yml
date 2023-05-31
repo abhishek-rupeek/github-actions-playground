@@ -2,6 +2,9 @@ name: Android Build Staging APK
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
     branches:
       - main
 
