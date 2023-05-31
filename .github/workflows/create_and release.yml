@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: release-artifacts
-          path: app/build/outputs/apk/staging
+          path: app/build/outputs/apk/staging/
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -52,5 +52,5 @@ jobs:
           generate_release_notes: true
           prerelease: true
           tag_name: ${{ github.event.pull_request.title }}
-          files: app/build/outputs/apk/release/staging.apk
+          files: app/build/outputs/apk/staging/staging.apk
 
