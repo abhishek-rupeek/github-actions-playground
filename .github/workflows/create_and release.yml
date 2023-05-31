@@ -28,31 +28,19 @@ jobs:
       - name: Build and test
         run: |
           ./gradlew assembleStaging
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v2
+      - name: Upload Release Build to Artifacts
+        uses: actions/upload-artifact@v3
         with:
-          name: staging-apk
-          path: app/build/outputs/apk/staging/*.apk
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: release-artifacts
+          paths: |
+            app/build/outputs/apk/release/
+            app/build/outputs/bundle/release/    
+      - name: Create Github Release
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.event.pull_request.title }}
-          release_name: Release ${{ github.event.pull_request.title }}
-          draft: false
-          prerelease: false
+          generate_release_notes: true
+          prerelease: true
+          files: |
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/bundle/release/app-release.aab
 
-      - name: Upload APK to Release
-        id: upload_release_asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: app/build/outputs/apk/staging/*.apk
-          asset_name: Staging-APK-${{ github.run_number }}.apk
-          asset_content_type: application/vnd.android.package-archive
