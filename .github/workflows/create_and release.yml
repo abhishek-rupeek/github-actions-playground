@@ -19,23 +19,14 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'oracle'
-          java-version: '17'
+          distribution: 'corretto'
+          java-version: '11'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v2
-        with:
-          sdk-platform: 'android-30'
-          build-tools: '30.0.3'
-
-      - name: Build and test
-        run: |
-          ./gradlew assembleStaging
-      - name: Upload Release Build to Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-artifacts
-          path: app/build/outputs/apk/staging/
+      # - name: Set up Android SDK
+      #   uses: android-actions/setup-android@v2
+      #   with:
+      #     sdk-platform: 'android-30'
+      #     build-tools: '30.0.3'
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -46,6 +37,14 @@ jobs:
           release_name: Release ${{ github.event.pull_request.title }}
           draft: true
           prerelease: true
+      - name: Build and test
+        run: ./gradlew assembleStaging
+  
+      - name: Upload Release Build to Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-artifacts
+          path: app/build/outputs/apk/staging/
       - name: Create Github Release
         uses: softprops/action-gh-release@v1
         with:
