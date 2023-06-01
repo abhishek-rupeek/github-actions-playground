@@ -41,10 +41,15 @@ jobs:
           path: app/build/outputs/apk/staging/
       - name: Build Changelog
         uses: mikepenz/release-changelog-builder-action@v3.7.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Github Release
         uses: softprops/action-gh-release@v1
         with:
           prerelease: false
+          draft: false
+          name: Release ${{ github.event.pull_request.title }}
+          body: ${{ steps.changelog.outputs.releaseNotes }}
           tag_name: ${{ github.event.pull_request.title }}
           files: app/build/outputs/apk/staging/app-staging-unsigned.apk
 
