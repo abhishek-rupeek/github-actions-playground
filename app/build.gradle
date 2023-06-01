@@ -1,6 +1,8 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "com.guardsquare.appsweep" version "latest.release"
+}
 android {
     compileSdkVersion 32
 
