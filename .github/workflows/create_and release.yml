@@ -15,21 +15,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 100
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'corretto'
           java-version: '11'
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.event.pull_request.title }}
-          release_name: Release ${{ github.event.pull_request.title }}
-          draft: true
-          prerelease: true
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ github.event.pull_request.title }}
+#          release_name: Release ${{ github.event.pull_request.title }}
+#          draft: true
+#          prerelease: true
       - name: Build and test
         run: ./gradlew assembleStaging
       - name: Upload Release Build to Artifacts
