@@ -15,10 +15,6 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '11'
-
-      - name: Build
-        run: ./gradlew build
-
       - name: Assemble Release Bundle
         run: |
           ./gradlew bundleRelease
