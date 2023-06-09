@@ -34,7 +34,6 @@ jobs:
 #          prerelease: true
       - name: Build and test
         run: ./gradlew assembleStaging
-
       - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v3
         with:
