@@ -14,42 +14,42 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'corretto'
           java-version: '11'
-
-      # - name: Set up Android SDK
-      #   uses: android-actions/setup-android@v2
-      #   with:
-      #     sdk-platform: 'android-30'
-      #     build-tools: '30.0.3'
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.event.pull_request.title }}
-          release_name: Release ${{ github.event.pull_request.title }}
-          draft: true
-          prerelease: true
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ github.event.pull_request.title }}
+#          release_name: Release ${{ github.event.pull_request.title }}
+#          draft: true
+#          prerelease: true
       - name: Build and test
         run: ./gradlew assembleStaging
-  
       - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: release-artifacts
           path: app/build/outputs/apk/staging/
+      - name: Build Changelog
+        uses: mikepenz/release-changelog-builder-action@v3.7.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Github Release
         uses: softprops/action-gh-release@v1
         with:
-          generate_release_notes: true
-          prerelease: true
+          prerelease: false
+          draft: false
+          name: Release ${{ github.event.pull_request.title }}
+          body: ${{ steps.changelog.outputs.releaseNotes }}
           tag_name: ${{ github.event.pull_request.title }}
           files: app/build/outputs/apk/staging/app-staging-unsigned.apk
 
