@@ -57,6 +57,6 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "A new staging APK has been generated. Download it here: '${{ github.event.repository.html_url }}/releases/download/${{ github.ref }}/Staging-APK-${{ github.run_number }}.apk'"
+            "text": "A new staging APK has been generated. Download it here: '${{ github.event.repository.html_url }}/releases/tag/${{ github.event.pull_request.title }}'"
           }' $SLACK_WEBHOOK_URL
 
