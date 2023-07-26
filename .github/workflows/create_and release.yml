@@ -52,22 +52,11 @@ jobs:
           body: ${{ steps.changelog.outputs.releaseNotes }}
           tag_name: ${{ github.event.pull_request.title }}
           files: app/build/outputs/apk/staging/app-staging-unsigned.apk
-      - name: Send APK to Slack
-        uses: slack/webhook-action@v2
+      - name: Notify Slack
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          method: post
-          payload: |
-            {
-              "channel": "app-release-share",
-              "text": "A new staging APK has been generated.",
-              "attachments": [
-                {
-                  "title": "Staging APK",
-                  "title_link": "https://github.com/${{ github.repository }}/releases/download/${{ github.ref }}/Staging-APK-${{ github.run_number }}.apk",
-                  "color": "#36a64f"
-                }
-              ]
-            }
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "text": "A new staging APK has been generated. Download it here: '${{ github.event.repository.html_url }}/releases/download/${{ github.ref }}/Staging-APK-${{ github.run_number }}.apk'"
+          }' $SLACK_WEBHOOK_URL
 
