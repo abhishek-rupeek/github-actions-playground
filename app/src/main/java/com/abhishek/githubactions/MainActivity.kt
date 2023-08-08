@@ -8,6 +8,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Toast.makeText(this, "Main branch", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Toast branch", Toast.LENGTH_LONG).show()
     }
 }
