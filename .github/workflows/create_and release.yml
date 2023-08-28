@@ -1,12 +1,6 @@
 name: Android Build Staging APK
 
-on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-    branches:
-      - main
+on: [pull_request_target]
 jobs: 
   build: 
     runs-on: ubuntu-latest
