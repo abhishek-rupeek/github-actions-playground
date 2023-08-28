@@ -1,5 +1,5 @@
 name: Android Build Staging APK
-'on':
+on:
   pull_request:
     types:
       - opened
