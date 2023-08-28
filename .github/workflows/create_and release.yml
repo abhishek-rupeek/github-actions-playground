@@ -30,14 +30,11 @@ jobs:
           tag_name: '${{ steps.branch.output }}'
           files: app/build/outputs/apk/release/app-release.apk
       - name: Notify Slack
-        env:
+        env: 
           SLACK_WEBHOOK_URL: '${{ secrets.SLACK_WEBHOOK_URL }}'
-          run: >
-            curl -X POST -H 'Content-type: application/json' --data '{
-    
-            "text": "A new GitHub release has been created for branch \{\{
-            steps\.branch\.output \}\}\. Download it here\: \'{{
-            github.event.repository.html_url }}/releases/tag/${{ steps.branch.output
-            }}'"
-    
-            }' $SLACK_WEBHOOK_URL
+          run: ''
+          curl -X POST -H 'Content-type: 'application/json'' --data ''{'
+          text: A new GitHub release has been created for branch <span class=
+          'math-inline">\{\{ steps\.branch\.output \}\}\. Download it here\': >-
+            \'</span>{{ github.event.repository.html_url }}/releases/tag/${{
+            steps.branch.output }}'" }' $SLACK_WEBHOOK_URL
