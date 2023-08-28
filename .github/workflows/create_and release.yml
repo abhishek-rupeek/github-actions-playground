@@ -1,13 +1,10 @@
 name: Android Build Staging APK
-on:
-  pull_request:
+on: 
+  pull_request: 
     types:
       - opened
-      - synchronize
-    branches:
-      - main
-jobs:
-  create-release:
+jobs: 
+  build: 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -20,7 +17,9 @@ jobs:
           distribution: corretto
           java-version: '11'
       - name: Get current branch
-        run: 'echo ::set-output name=branch::$(git rev-parse --abbrev-ref HEAD)'
+        run: >-
+          echo ::set-output name=branch::<span class="math-inline">\(git rev\-parse
+          \-\-abbrev\-ref HEAD\)
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
