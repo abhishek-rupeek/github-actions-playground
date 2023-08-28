@@ -1,1 +1,1 @@
-# Github Actions Playground Demo              
+# Github Actions Playground Demo
