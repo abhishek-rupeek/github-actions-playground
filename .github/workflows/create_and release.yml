@@ -5,7 +5,7 @@ on:
       - opened	
       - synchronize	
     branches:	
-      - main	
+      - staging	
 jobs:	
   build:	
     runs-on: ubuntu-latest	
@@ -18,9 +18,7 @@ jobs:
         uses: actions/setup-java@v3	
         with:	
           distribution: 'corretto'	
-          java-version: '11'	
-      - name: Get current branch	
-        run: echo ::set-output name=branch::$(git rev-parse --abbrev-ref HEAD)	
+          java-version: '11'
       - name: Create GitHub Release	
         uses: softprops/action-gh-release@v1	
         with:	
