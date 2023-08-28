@@ -1,17 +1,14 @@
 name: Android Build Staging APK
-
-on:
+'on':
   pull_request:
     types:
       - opened
       - synchronize
     branches:
       - main
-
 jobs:
-  build:
+  create-release:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -20,43 +17,25 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'corretto'
+          distribution: corretto
           java-version: '11'
-#      - name: Create Release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ github.event.pull_request.title }}
-#          release_name: Release ${{ github.event.pull_request.title }}
-#          draft: true
-#          prerelease: true
-      - name: Build and test
-        run: ./gradlew assembleStaging
-      - name: Upload Release Build to Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-artifacts
-          path: app/build/outputs/apk/staging/
-#      - name: Build Changelog
-#        uses: mikepenz/release-changelog-builder-action@v3.7.2
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create Github Release
+      - name: Get current branch
+        run: 'echo ::set-output name=branch::$(git rev-parse --abbrev-ref HEAD)'
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           prerelease: false
           draft: false
-          name: Release ${{ github.event.pull_request.title }}
-          body: ${{ steps.changelog.outputs.releaseNotes }}
-          tag_name: ${{ github.event.pull_request.title }}
-          files: app/build/outputs/apk/staging/app-staging-unsigned.apk
+          name: 'Release ${{ steps.branch.output }}'
+          body: '${{ steps.changelog.outputs.releaseNotes }}'
+          tag_name: '${{ steps.branch.output }}'
+          files: app/build/outputs/apk/release/app-release.apk
       - name: Notify Slack
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "A new staging APK has been generated. Download it here: '${{ github.event.repository.html_url }}/releases/tag/${{ github.event.pull_request.title }}'"
-          }' $SLACK_WEBHOOK_URL
-
+        env: 
+          SLACK_WEBHOOK_URL: '${{ secrets.SLACK_WEBHOOK_URL }}'
+          run: ''
+          curl -X POST -H 'Content-type: 'application/json'' --data ''{'
+          text: A new GitHub release has been created for branch <span class=
+          'math-inline">\{\{ steps\.branch\.output \}\}\. Download it here\': >-
+            \'</span>{{ github.event.repository.html_url }}/releases/tag/${{
+            steps.branch.output }}'" }' $SLACK_WEBHOOK_URL
