@@ -23,12 +23,9 @@ jobs:
       - name: Get Merged PR Title
         id: pr_info
         run: |
-          # Fetch the latest PR title that was merged into main
           PR_TITLE=$(gh pr list --base main --state merged --limit 1 --json title --jq '.[0].title')
-
           echo "PR Title: $PR_TITLE"
-          
-          # Extract the version number (assuming PR title contains something like "Release v1.2.3")
+
           VERSION=$(echo "$PR_TITLE" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+')
 
           if [[ -z "$VERSION" ]]; then
@@ -45,6 +42,9 @@ jobs:
         run: |
           git tag ${{ env.release_version }}
           git push origin ${{ env.release_version }}
+
+      - name: Install Conventional Changelog
+        run: npm install -g conventional-changelog-cli
 
       - name: Generate Release Notes
         run: |
