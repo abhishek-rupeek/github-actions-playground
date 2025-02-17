@@ -43,14 +43,26 @@ jobs:
           git tag ${{ env.release_version }}
           git push origin ${{ env.release_version }}
 
-      - name: Install Conventional Changelog
-        run: npm install -g conventional-changelog-cli
-
-      - name: Generate Release Notes
+      - name: Generate Custom Release Notes
         run: |
-          echo "Generating release notes..."
-          conventional-changelog -p angular -o RELEASE_NOTES.md --release-count 1
+          echo "## What's Changed" > RELEASE_NOTES.md
+          
+          # Fetch merged PRs since last release
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          PRS=$(gh pr list --base main --state merged --limit 10 --json title,number,author --jq '.[] | "* \(.title) by @\(.author.login) in https://github.com/${{ github.repository }}/pull/\(.number)"')
+
+          if [[ -z "$PRS" ]]; then
+            echo "No PRs found."
+          else
+            echo "$PRS" >> RELEASE_NOTES.md
+          fi
+          
+          echo "" >> RELEASE_NOTES.md
+          echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$LAST_TAG...main" >> RELEASE_NOTES.md
+          
           cat RELEASE_NOTES.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
